@@ -1,6 +1,5 @@
 package pkg;
 
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,24 +7,29 @@ public class Cuenta {
     public String mNumero;
     public String mTitular;
     public List<Movimiento> mMovimientos = new ArrayList<>();
-    private double saldoTemporal;
 
     public Cuenta(double saldoInicial) {
-        this.saldoTemporal = saldoInicial;
+        if (saldoInicial > 0) {
+            ingreso(saldoInicial);
+        }
     }
     
     public double getSaldo() {
-        return this.saldoTemporal;
+        double saldo = 0;
+        for (Movimiento m : mMovimientos) {
+            saldo += m.getImporte(); 
+        }
+        return saldo;
     }
     
     public void ingreso(double i) {
-        this.saldoTemporal += i;
+        mMovimientos.add(new Movimiento(i, "Ingreso")); 
     }
     
     public void reintegro(double i) {
-        if (this.saldoTemporal - i < -500.0) {
-            System.out.println("Fondos insuficientes");
+        if (getSaldo() - i < -500.0) {
+        	System.out.println("Fondos insuficientes");
         }
-        this.saldoTemporal -= i;
+        mMovimientos.add(new Movimiento(-i, "Reintegro")); 
     }
 }
